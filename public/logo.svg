@@ -6,9 +6,9 @@
     </linearGradient>
   </defs>
 
-  <!-- Icon: Stylized O -->
-  <circle cx="80" cy="100" r="32" fill="none" stroke="url(#gradMain)" stroke-width="12"/>
-  <path d="M55 115 Q80 80 105 115" stroke="url(#gradMain)" stroke-width="6" fill="none"/>
+  <!-- Orbit O -->
+  <circle cx="80" cy="100" r="32" stroke="url(#gradMain)" stroke-width="8" fill="none"/>
+  <circle cx="110" cy="80" r="6" fill="url(#gradMain)"/>
 
   <!-- Wordmark -->
   <text x="160" y="112" font-family="Poppins, Inter, sans-serif" 
