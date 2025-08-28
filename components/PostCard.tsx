@@ -24,8 +24,7 @@ export default function PostCard({ post }: { post: any }) {
       entries.forEach(async (ent) => {
         if (ent.isIntersecting && !done) {
           done = true;
-          const { data, error } = await supabase
-            .rpc("bump_views", { p_id: post.id });
+          const { data, error } = await supabase.rpc("bump_views", { p_id: post.id });
           if (!error && data) setViews((data as any).views);
           else if (error) console.error("View update error:", error);
         }
@@ -51,26 +50,23 @@ export default function PostCard({ post }: { post: any }) {
   const share = async () => {
     try {
       const el = cardRef.current!;
-      // Temporarily add a subtle margin/padding to look better in stories
+      // Optional inset to give a margin in stories
       el.style.boxShadow = "0 0 0 12px #000 inset";
       const blob = await elementToPngBlob(el);
       el.style.boxShadow = "";
 
       const file = new File([blob], "ourspace-post.png", { type: "image/png" });
-      const url = `${location.origin}/feed#${post.id}`;
-      const text = post.text;
 
-      // If device supports sharing files, use native share with the image
+      // If device supports file share, share **image only** (no caption)
       if ((navigator as any).canShare?.({ files: [file] })) {
         await (navigator as any).share({
           files: [file],
-          title: "OurSpace",
-          text,
+          title: "OurSpace" // no `text` -> no caption
         });
         return;
       }
 
-      // Fallback 1: download image so user can upload to Snap/IG/Stories
+      // Fallback: download the image so user can upload it anywhere
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = "ourspace-post.png";
@@ -78,9 +74,10 @@ export default function PostCard({ post }: { post: any }) {
       a.click();
       a.remove();
 
-      // Fallback 2: also copy link for convenience
+      // Optionally also copy a link for convenience (no forced caption)
+      const url = `${location.origin}/feed#${post.id}`;
       await navigator.clipboard.writeText(url);
-      alert("Saved image to your device and copied link.");
+      alert("Saved image to your device and copied the link.");
     } catch (e: any) {
       console.error("Share failed:", e);
       // Last fallback: just copy link
