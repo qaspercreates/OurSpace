@@ -1,20 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200">
   <defs>
-    <radialGradient id="grad" cx="30%" cy="30%" r="80%">
+    <linearGradient id="gradText" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="50%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <radialGradient id="gradOrb" cx="30%" cy="30%" r="80%">
       <stop offset="0%" stop-color="#8B5CF6"/>
       <stop offset="50%" stop-color="#6366F1"/>
       <stop offset="100%" stop-color="#06B6D4"/>
     </radialGradient>
     <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feGaussianBlur stdDeviation="6" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <circle cx="100" cy="100" r="90" fill="url(#grad)" filter="url(#glow)"/>
-  <!-- subtle star / sparkle -->
-  <path d="M100 65 L108 92 L135 100 L108 108 L100 135 L92 108 L65 100 L92 92 Z" 
+  
+  <!-- Orb icon -->
+  <circle cx="100" cy="100" r="70" fill="url(#gradOrb)" filter="url(#glow)"/>
+  <path d="M100 75 L108 98 L130 100 L108 102 L100 125 L92 102 L70 100 L92 98 Z" 
         fill="white" opacity="0.85"/>
+  
+  <!-- Wordmark -->
+  <text x="200" y="115" font-family="Inter, Poppins, sans-serif" font-size="64" 
+        font-weight="700" fill="url(#gradText)" letter-spacing="1">
+    OurSpace
+  </text>
 </svg>
