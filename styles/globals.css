@@ -114,3 +114,5 @@ textarea::placeholder{ color:#a1a1aa; }
 
 /* ---------- Footer ---------- */
 footer{ color:#a1a1aa }
+/* Make header look substantial on all screens */
+.nav { position: sticky; top: 0; z-index: 40; }
