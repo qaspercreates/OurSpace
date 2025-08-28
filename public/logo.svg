@@ -6,14 +6,11 @@
     </linearGradient>
   </defs>
 
-  <!-- O with spark -->
-  <circle cx="95" cy="105" r="42" stroke="url(#grad)" stroke-width="12" fill="none"/>
-  <polygon points="95,85 100,100 115,105 100,110 95,125 90,110 75,105 90,100"
-           fill="url(#grad)" />
+  <!-- Wordmark with proper O -->
+  <text x="50" y="120" font-family="Poppins, Inter, sans-serif"
+        font-size="72" font-weight="700" fill="url(#grad)">OurSpace</text>
 
-  <!-- Wordmark -->
-  <text x="160" y="120" font-family="Poppins, Inter, sans-serif"
-        font-size="72" font-weight="700" fill="url(#grad)">
-    urSpace
-  </text>
+  <!-- Spark inside O (aligned to letter O position) -->
+  <polygon points="82,90 88,105 103,110 88,115 82,130 77,115 62,110 77,105"
+           fill="url(#grad)" />
 </svg>
