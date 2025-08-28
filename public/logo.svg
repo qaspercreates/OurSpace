@@ -5,10 +5,9 @@
     </linearGradient>
   </defs>
 
-  <!-- Mark: minimal 8-point spark inside a ring -->
-  <circle cx="88" cy="100" r="42" fill="none" stroke="url(#g)" stroke-width="8"/>
-  <path d="M88 78 L94 94 L110 100 L94 106 L88 122 L82 106 L66 100 L82 94 Z"
-        fill="url(#g)"/>
+  <!-- Mark: horizon arc + dot -->
+  <path d="M48 112 A40 40 0 1 1 128 112" fill="none" stroke="url(#g)" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="128" cy="84" r="7" fill="url(#g)"/>
 
   <!-- Wordmark -->
   <text x="184" y="114" font-family="Poppins, Inter, system-ui, -apple-system, Segoe UI, sans-serif"
