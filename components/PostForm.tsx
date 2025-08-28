@@ -15,11 +15,10 @@ export default function PostForm({ onPosted }: { onPosted: () => void }) {
     if (!trimmed) return;
     if (trimmed.length > maxLen) return alert("Keep it under 280 characters.");
 
-    const { error } = await supabase.from("Posts").insert({
+    const { error } = await supabase.from("posts").insert({
       text: trimmed,
-      tag,
-      likes: 0,
-      views: 0
+      tag
+      // likes/views default to 0 in DB
     });
 
     if (error) {
