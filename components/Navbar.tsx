@@ -9,12 +9,12 @@ export default function NavBar() {
 
   return (
     <header className="nav sticky top-0 z-40">
-      <div className="mx-auto max-w-5xl px-4 h-14 flex items-center justify-between">
+      <div className="container h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
+          {/* small in nav only */}
           <img src="/logo.svg" alt="OurSpace" className="h-7 w-auto" />
         </Link>
 
-        {/* Show CTA everywhere EXCEPT on /feed */}
         {!onFeed && (
           <Link href="/feed" className="btn-outline text-sm">
             Enter the Feed
