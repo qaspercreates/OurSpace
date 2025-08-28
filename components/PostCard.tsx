@@ -14,7 +14,7 @@ export default function PostCard({ post }: { post: any }) {
     setLiked(localStorage.getItem(`liked_${post.id}`) === "1");
   }, [post.id]);
 
-  // Count a view once when card enters viewport
+  // Count a view once when the card enters viewport
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -24,12 +24,13 @@ export default function PostCard({ post }: { post: any }) {
         if (ent.isIntersecting && !done) {
           done = true;
           const { data, error } = await supabase
-            .from("posts")
+            .from("Posts") // <-- capital P
             .update({ views: (post.views || 0) + 1 })
             .eq("id", post.id)
             .select()
             .single();
           if (!error && data) setViews(data.views);
+          else if (error) console.error("View update error:", error);
         }
       });
     }, { threshold: 0.5 });
@@ -40,7 +41,7 @@ export default function PostCard({ post }: { post: any }) {
   const like = async () => {
     if (liked) return;
     const { data, error } = await supabase
-      .from("posts")
+      .from("Posts") // <-- capital P
       .update({ likes: (likes || 0) + 1 })
       .eq("id", post.id)
       .select()
@@ -49,6 +50,9 @@ export default function PostCard({ post }: { post: any }) {
       setLikes(data.likes);
       setLiked(true);
       localStorage.setItem(`liked_${post.id}`, "1");
+    } else if (error) {
+      console.error("Like update error:", error);
+      alert("Error: " + error.message);
     }
   };
 
