@@ -6,12 +6,10 @@
     </linearGradient>
   </defs>
 
-  <!-- Wordmark -->
-  <text x="50" y="120" font-family="Poppins, Inter, sans-serif"
-        font-size="72" font-weight="700" fill="url(#grad)" letter-spacing="1">
-    OurSpace
-  </text>
+  <!-- Stylized O -->
+  <circle cx="85" cy="100" r="42" stroke="url(#grad)" stroke-width="14" fill="none" stroke-dasharray="220 60"/>
 
-  <!-- Orbit around the O -->
-  <circle cx="88" cy="90" r="46" stroke="url(#grad)" stroke-width="6" fill="none" stroke-dasharray="180 90"/>
+  <!-- Wordmark -->
+  <text x="160" y="115" font-family="Poppins, Inter, sans-serif"
+        font-size="72" font-weight="700" fill="url(#grad)">urSpace</text>
 </svg>
