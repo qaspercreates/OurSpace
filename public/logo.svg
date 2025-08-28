@@ -5,9 +5,10 @@
     </linearGradient>
   </defs>
 
-  <!-- Mark: horizon arc + dot -->
-  <path d="M48 112 A40 40 0 1 1 128 112" fill="none" stroke="url(#g)" stroke-width="10" stroke-linecap="round"/>
-  <circle cx="128" cy="84" r="7" fill="url(#g)"/>
+  <!-- Mark -->
+  <circle cx="88" cy="100" r="36" fill="none" stroke="url(#g)" stroke-width="10"/>
+  <path d="M54 116 C88 76 126 76 150 112" fill="none" stroke="url(#g)" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="150" cy="112" r="6" fill="url(#g)"/>
 
   <!-- Wordmark -->
   <text x="184" y="114" font-family="Poppins, Inter, system-ui, -apple-system, Segoe UI, sans-serif"
