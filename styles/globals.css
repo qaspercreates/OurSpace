@@ -1,14 +1,42 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+.card {
+  background: rgba(24, 24, 27, 0.6); /* semi-transparent dark */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
 
-:root { color-scheme: light dark; }
-body { @apply bg-black text-white antialiased; }
-a { @apply underline-offset-4; }
-.container { @apply mx-auto max-w-xl px-4; }
-.card { @apply bg-zinc-950 border border-zinc-800 rounded-2xl p-4 shadow; }
-.btn { @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium; }
-.btn-primary { @apply btn bg-brand-600 hover:bg-brand-700 text-white; }
-.btn-outline { @apply btn border border-zinc-700 hover:bg-zinc-900; }
-.tag { @apply text-xs px-2 py-1 rounded-full bg-zinc-800 border border-zinc-700; }
-.muted { @apply text-zinc-400; }
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #7C3AED, #3B82F6);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: scale(1.03);
+}
+
+.btn-outline {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 0.5rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+  background: rgba(255,255,255,0.1);
+}
