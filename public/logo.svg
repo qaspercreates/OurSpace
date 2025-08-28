@@ -1,10 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#7C3AED"/>
-      <stop offset="100%" stop-color="#3B82F6"/>
-    </linearGradient>
+    <radialGradient id="grad" cx="30%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="50%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
-  <circle cx="100" cy="100" r="90" fill="url(#grad)" />
-  <text x="50%" y="55%" text-anchor="middle" fill="white" font-size="72" font-family="Inter, sans-serif" dy=".3em">O</text>
+  <circle cx="100" cy="100" r="90" fill="url(#grad)" filter="url(#glow)"/>
+  <!-- subtle star / sparkle -->
+  <path d="M100 65 L108 92 L135 100 L108 108 L100 135 L92 108 L65 100 L92 92 Z" 
+        fill="white" opacity="0.85"/>
 </svg>
