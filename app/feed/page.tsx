@@ -27,7 +27,7 @@ export default function FeedPage() {
     const end = start + pageSize - 1;
 
     const { data, error } = await supabase
-      .from("Posts") // <-- capital P
+      .from("posts") // lowercase
       .select("*")
       .order("created_at", { ascending: false })
       .range(start, end);
