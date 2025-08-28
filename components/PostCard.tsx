@@ -24,7 +24,7 @@ export default function PostCard({ post }: { post: any }) {
         if (ent.isIntersecting && !done) {
           done = true;
           const { data, error } = await supabase
-            .from("Posts") // <-- capital P
+            .from("posts")
             .update({ views: (post.views || 0) + 1 })
             .eq("id", post.id)
             .select()
@@ -41,7 +41,7 @@ export default function PostCard({ post }: { post: any }) {
   const like = async () => {
     if (liked) return;
     const { data, error } = await supabase
-      .from("Posts") // <-- capital P
+      .from("posts")
       .update({ likes: (likes || 0) + 1 })
       .eq("id", post.id)
       .select()
