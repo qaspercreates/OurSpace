@@ -21,7 +21,7 @@ export default function FeedPage() {
   const pageSize = 20;
   const loadedOnce = useRef(false);
 
-  const loadPosts = async (reset = false) => {
+  const load = async (reset=false) => {
     setLoading(true);
     const start = reset ? 0 : from;
     const end = start + pageSize - 1;
@@ -36,34 +36,29 @@ export default function FeedPage() {
       setPosts(reset ? (data as Post[]) : [...posts, ...(data as Post[])]);
       setFrom(end + 1);
     } else {
-      console.error("Load posts error:", error);
+      console.error(error);
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    if (!loadedOnce.current) {
-      loadPosts(true);
-      loadedOnce.current = true;
-    }
+    if (!loadedOnce.current) { load(true); loadedOnce.current = true; }
   }, []);
 
   return (
-    <div className="space-y-6">
-      <PostForm onPosted={() => loadPosts(true)} />
+    <main className="mx-auto max-w-3xl px-4 py-6 space-y-6">
+      <PostForm onPosted={() => load(true)} />
 
-      {/* Uniform spacing between cards */}
+      {/* Uniform gaps between cards */}
       <section className="stack-4">
-        {posts.map((p) => (
-          <PostCard key={p.id} post={p} />
-        ))}
+        {posts.map((p) => <PostCard key={p.id} post={p} />)}
       </section>
 
       <div className="text-center">
-        <button disabled={loading} onClick={() => loadPosts()} className="btn-outline">
+        <button onClick={() => load()} disabled={loading} className="btn-outline">
           {loading ? "Loading..." : "Load more"}
         </button>
       </div>
-    </div>
+    </main>
   );
 }
