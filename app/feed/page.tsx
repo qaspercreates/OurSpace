@@ -27,7 +27,7 @@ export default function FeedPage() {
     const end = start + pageSize - 1;
 
     const { data, error } = await supabase
-      .from("posts")
+      .from("Posts") // <-- capital P
       .select("*")
       .order("created_at", { ascending: false })
       .range(start, end);
@@ -35,6 +35,8 @@ export default function FeedPage() {
     if (!error && data) {
       setPosts(reset ? (data as Post[]) : [...posts, ...(data as Post[])]);
       setFrom(end + 1);
+    } else {
+      console.error("Load posts error:", error);
     }
     setLoading(false);
   };
