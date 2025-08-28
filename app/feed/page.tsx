@@ -27,7 +27,7 @@ export default function FeedPage() {
     const end = start + pageSize - 1;
 
     const { data, error } = await supabase
-      .from("posts") // lowercase
+      .from("posts")
       .select("*")
       .order("created_at", { ascending: false })
       .range(start, end);
@@ -51,16 +51,19 @@ export default function FeedPage() {
   return (
     <div className="space-y-6">
       <PostForm onPosted={() => loadPosts(true)} />
-      <section className="space-y-3">
+
+      {/* Uniform spacing between cards */}
+      <section className="stack-4">
         {posts.map((p) => (
           <PostCard key={p.id} post={p} />
         ))}
-        <div className="text-center">
-          <button disabled={loading} onClick={() => loadPosts()} className="btn-outline">
-            {loading ? "Loading..." : "Load more"}
-          </button>
-        </div>
       </section>
+
+      <div className="text-center">
+        <button disabled={loading} onClick={() => loadPosts()} className="btn-outline">
+          {loading ? "Loading..." : "Load more"}
+        </button>
+      </div>
     </div>
   );
 }
