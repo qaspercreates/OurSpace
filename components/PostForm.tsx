@@ -15,7 +15,7 @@ export default function PostForm({ onPosted }: { onPosted: () => void }) {
     if (!trimmed) return;
     if (trimmed.length > maxLen) return alert("Keep it under 280 characters.");
 
-    const { error } = await supabase.from("posts").insert({
+    const { error } = await supabase.from("Posts").insert({
       text: trimmed,
       tag,
       likes: 0,
@@ -23,7 +23,8 @@ export default function PostForm({ onPosted }: { onPosted: () => void }) {
     });
 
     if (error) {
-      alert("Could not post. Try again.");
+      console.error("Insert error:", error);
+      alert("Error: " + error.message);
       return;
     }
     setText("");
