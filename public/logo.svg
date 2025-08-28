@@ -1,16 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200">
   <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#06B6D4"/>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
     </linearGradient>
   </defs>
 
   <!-- Mark -->
-  <circle cx="88" cy="100" r="36" fill="none" stroke="url(#g)" stroke-width="10"/>
-  <path d="M54 116 C88 76 126 76 150 112" fill="none" stroke="url(#g)" stroke-width="6" stroke-linecap="round"/>
-  <circle cx="150" cy="112" r="6" fill="url(#g)"/>
+  <circle cx="90" cy="100" r="36" stroke="url(#grad)" stroke-width="8" fill="none"/>
+  <!-- Spark flare -->
+  <path d="M90 80 L96 100 L116 106 L96 112 L90 132 L84 112 L64 106 L84 100 Z" 
+        fill="url(#grad)" opacity="0.95"/>
 
   <!-- Wordmark -->
-  <text x="184" y="114" font-family="Poppins, Inter, system-ui, -apple-system, Segoe UI, sans-serif"
-        font-weight="700" font-size="64" fill="url(#g)" letter-spacing=".5">OurSpace</text>
+  <text x="170" y="112" font-family="Poppins, Inter, sans-serif" 
+        font-size="64" font-weight="700" fill="url(#grad)" letter-spacing="0.5">
+    OurSpace
+  </text>
 </svg>
