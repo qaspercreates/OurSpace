@@ -5,14 +5,7 @@ import { supabase } from "@/lib/supabase";
 import PostForm from "@/components/PostForm";
 import PostCard from "@/components/PostCard";
 
-type Post = {
-  id: string;
-  text: string;
-  tag: string;
-  likes: number;
-  views: number;
-  created_at: string;
-};
+type Post = { id:string; text:string; tag:string; likes:number; views:number; created_at:string; };
 
 export default function FeedPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -23,37 +16,25 @@ export default function FeedPage() {
 
   const load = async (reset=false) => {
     setLoading(true);
-    const start = reset ? 0 : from;
-    const end = start + pageSize - 1;
-
+    const start = reset ? 0 : from; const end = start + pageSize - 1;
     const { data, error } = await supabase
-      .from("posts")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .range(start, end);
-
-    if (!error && data) {
+      .from("posts").select("*")
+      .order("created_at", { ascending:false }).range(start, end);
+    if (!error && data){
       setPosts(reset ? (data as Post[]) : [...posts, ...(data as Post[])]);
       setFrom(end + 1);
-    } else {
-      console.error(error);
-    }
+    } else { console.error(error); }
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (!loadedOnce.current) { load(true); loadedOnce.current = true; }
-  }, []);
+  useEffect(() => { if (!loadedOnce.current){ load(true); loadedOnce.current = true; } }, []);
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6 space-y-6">
+    <main className="container py-6 space-y-6">
       <PostForm onPosted={() => load(true)} />
-
-      {/* Uniform gaps between cards */}
       <section className="stack-4">
-        {posts.map((p) => <PostCard key={p.id} post={p} />)}
+        {posts.map(p => <PostCard key={p.id} post={p} />)}
       </section>
-
       <div className="text-center">
         <button onClick={() => load()} disabled={loading} className="btn-outline">
           {loading ? "Loading..." : "Load more"}
