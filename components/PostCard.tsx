@@ -23,37 +23,30 @@ export default function PostCard({ post }: { post: any }) {
       entries.forEach(async (ent) => {
         if (ent.isIntersecting && !done) {
           done = true;
-          const { data, error } = await supabase
-            .from("posts")
-            .update({ views: (post.views || 0) + 1 })
-            .eq("id", post.id)
-            .select()
-            .single();
-          if (!error && data) setViews(data.views);
-          else if (error) console.error("View update error:", error);
+          const { data, error } = await supabase.rpc("bump_views", { p_id: post.id });
+          if (error) {
+            console.error("View update error:", error);
+          } else if (data) {
+            setViews((data as any).views);
+          }
         }
       });
     }, { threshold: 0.5 });
     obs.observe(el);
     return () => obs.disconnect();
-  }, [post.id, post.views]);
+  }, [post.id]);
 
   const like = async () => {
     if (liked) return;
-    const { data, error } = await supabase
-      .from("posts")
-      .update({ likes: (likes || 0) + 1 })
-      .eq("id", post.id)
-      .select()
-      .single();
-    if (!error && data) {
-      setLikes(data.likes);
-      setLiked(true);
-      localStorage.setItem(`liked_${post.id}`, "1");
-    } else if (error) {
+    const { data, error } = await supabase.rpc("bump_likes", { p_id: post.id });
+    if (error) {
       console.error("Like update error:", error);
       alert("Error: " + error.message);
+      return;
     }
+    setLiked(true);
+    localStorage.setItem(`liked_${post.id}`, "1");
+    if (data) setLikes((data as any).likes);
   };
 
   const share = async () => {
@@ -67,14 +60,13 @@ export default function PostCard({ post }: { post: any }) {
     }
   };
 
-  const time = new Date(post.created_at);
-  const timeAgo = time.toLocaleString();
+  const time = new Date(post.created_at).toLocaleString();
 
   return (
     <article ref={ref} id={post.id} className="card">
       <div className="flex items-center justify-between text-xs muted mb-2">
         <span className="tag">{post.tag}</span>
-        <span>{timeAgo}</span>
+        <span>{time}</span>
       </div>
       <p className="text-lg leading-relaxed whitespace-pre-wrap">{post.text}</p>
       <div className="flex items-center gap-6 mt-4 text-sm">
