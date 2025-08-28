@@ -1,16 +1,17 @@
-export default function Page() {
+export default function HomePage() {
   return (
-    <div className="text-center space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold">OurSpace</h1>
-        <p className="muted">Say anything. Read everything.</p>
-      </div>
-      <a href="/feed" className="btn-primary">Enter the Feed</a>
-      <div className="mt-10 card text-left">
-        <p className="muted">
-          Anonymous posts. No sign-ups. X-style postcards with ❤️ likes, 👁 views and 🔗 share.
-        </p>
-      </div>
-    </div>
+    <main className="flex flex-col items-center justify-center min-h-screen text-center px-6">
+      <img src="/logo.svg" alt="OurSpace Logo" className="w-24 h-24 mb-6 drop-shadow-lg" />
+      <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent mb-4">
+        OurSpace
+      </h1>
+      <p className="text-lg md:text-xl text-zinc-300 max-w-lg mb-8">
+        Say anything. Read everything.<br />
+        Anonymous posts. No sign-ups. Pure feed with ❤️ likes, 👁 views and 🔗 share.
+      </p>
+      <a href="/feed" className="btn-primary text-lg">
+        Enter the Feed
+      </a>
+    </main>
   );
 }
