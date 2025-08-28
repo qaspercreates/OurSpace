@@ -3,56 +3,87 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-const TAGS = ["Funny", "Sad", "Angry", "Secret", "Random"] as const;
+const TAGS = [
+  "Random",
+  "Funny",
+  "Storytime",
+  "Advice",
+  "Confession",
+  "Hot Take",
+  "Wholesome",
+  "Love",
+  "Friendship",
+  "School",
+  "Work",
+  "Money",
+  "Tech",
+  "Gaming",
+  "Sports",
+  "Music",
+  "Movies/TV",
+  "Books",
+  "News",
+  "Travel",
+  "Food",
+  "Fitness",
+  "Mental Health",
+  "Small Win",
+];
 
 export default function PostForm({ onPosted }: { onPosted: () => void }) {
   const [text, setText] = useState("");
-  const [tag, setTag] = useState<(typeof TAGS)[number]>("Random");
-  const maxLen = 280;
+  const [tag, setTag] = useState(TAGS[0]);
+  const [loading, setLoading] = useState(false);
 
   const submit = async () => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
-    if (trimmed.length > maxLen) return alert("Keep it under 280 characters.");
-
-    const { error } = await supabase.from("posts").insert({
-      text: trimmed,
-      tag
-      // likes/views default to 0 in DB
-    });
-
+    if (!text.trim()) return;
+    setLoading(true);
+    const { error } = await supabase
+      .from("posts")
+      .insert({ text, tag, likes: 0, views: 0 });
+    setLoading(false);
     if (error) {
-      console.error("Insert error:", error);
-      alert("Error: " + error.message);
+      alert("Could not post. Try again.");
       return;
     }
     setText("");
-    setTag("Random");
+    setTag(TAGS[0]);
     onPosted();
   };
 
   return (
-    <div className="card space-y-3">
-      <textarea
-        className="w-full bg-transparent outline-none resize-none"
-        placeholder="What's on your mind?"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        maxLength={maxLen}
-        rows={3}
-      />
-      <div className="flex items-center justify-between">
+    <div className="card">
+      <div className="flex items-start gap-3">
         <select
-          className="bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2"
           value={tag}
-          onChange={(e) => setTag(e.target.value as any)}
+          onChange={(e) => setTag(e.target.value)}
+          className="min-w-[9rem] md:min-w-[12rem] bg-black/30 border border-white/10 rounded-md py-2 px-3 outline-none focus:ring-2 focus:ring-purple-400"
         >
           {TAGS.map((t) => (
-            <option key={t} value={t}>{t}</option>
+            <option key={t} value={t}>
+              {t}
+            </option>
           ))}
         </select>
-        <button onClick={submit} className="btn-primary">Post</button>
+
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value.slice(0, 280))}
+          placeholder="What’s on your mind?"
+          rows={3}
+          className="flex-1 bg-black/20 border border-white/10 rounded-md p-3 outline-none focus:ring-2 focus:ring-blue-400"
+        />
+
+        <button
+          onClick={submit}
+          disabled={loading || !text.trim()}
+          className="btn-primary self-start"
+        >
+          {loading ? "Posting…" : "Post"}
+        </button>
       </div>
+
+      <div className="mt-2 text-sm text-zinc-400">{text.length}/280</div>
     </div>
   );
 }
