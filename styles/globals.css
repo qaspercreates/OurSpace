@@ -1,42 +1,158 @@
-.card {
-  background: rgba(24, 24, 27, 0.6); /* semi-transparent dark */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 1rem 1.2rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+/* ===== Tailwind base ===== */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Root design tokens ===== */
+:root{
+  --bg-1:#0b1020;          /* deep navy */
+  --bg-2:#0a0f1a;          /* even deeper */
+  --glass:#18181b99;       /* zinc-900 at ~60% */
+  --border:rgba(255,255,255,.12);
+  --muted:#a1a1aa;         /* zinc-400 */
+  --text:#fafafa;          /* near-white */
+  --grad-a:#7C3AED;        /* violet-600 */
+  --grad-b:#3B82F6;        /* blue-500 */
+  --grad-c:#06B6D4;        /* cyan-500 */
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+/* ===== Premium gradient background with subtle pattern ===== */
+html,body{height:100%}
+body{
+  color:var(--text);
+  background:
+    radial-gradient(1200px 800px at -10% -10%, rgba(124,58,237,.35), transparent 60%),
+    radial-gradient(1000px 700px at 110% 0%, rgba(59,130,246,.25), transparent 55%),
+    radial-gradient(900px 600px at 50% 120%, rgba(6,182,212,.20), transparent 60%),
+    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  min-height:100%;
+  position:relative;
+  overflow-x:hidden;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #7C3AED, #3B82F6);
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border-radius: 12px;
-  font-weight: 600;
-  transition: transform 0.15s ease, opacity 0.2s ease;
+/* Optional animated glow blobs (looks premium, but subtle) */
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  inset:auto;
+  width:42vmax;
+  height:42vmax;
+  border-radius:50%;
+  filter:blur(60px);
+  pointer-events:none;
+  opacity:.35;
+  z-index:-1;
+}
+body::before{
+  left:-12vmax; top:-10vmax;
+  background:radial-gradient(circle at 30% 30%, var(--grad-a), transparent 60%);
+  animation:blob 22s ease-in-out infinite;
+}
+body::after{
+  right:-14vmax; top:-6vmax;
+  background:radial-gradient(circle at 70% 30%, var(--grad-b), transparent 60%);
+  animation:blob 26s ease-in-out infinite reverse;
+}
+@media (prefers-reduced-motion: reduce){
+  body::before, body::after{ animation:none }
 }
 
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: scale(1.03);
+/* ===== Shared utility-ish classes via @layer components ===== */
+@layer components {
+
+  /* Glassmorphic card (post, form, etc.) */
+  .card{
+    background:var(--glass);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:1rem 1.1rem;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    box-shadow:0 10px 28px rgba(0,0,0,.45);
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 16px 36px rgba(0,0,0,.55);
+    border-color:rgba(255,255,255,.18);
+  }
+
+  /* Primary gradient button */
+  .btn-primary{
+    background:linear-gradient(135deg, var(--grad-a), var(--grad-b) 60%, var(--grad-c));
+    color:white;
+    padding:.65rem 1.15rem;
+    border-radius:12px;
+    font-weight:700;
+    letter-spacing:.2px;
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 6px 18px rgba(124,58,237,.35);
+    transition:transform .12s ease, opacity .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary:hover{ opacity:.95; transform:translateY(-1px); box-shadow:0 10px 26px rgba(59,130,246,.38) }
+  .btn-primary:active{ transform:translateY(0) scale(.99) }
+
+  /* Secondary / outline button */
+  .btn-outline{
+    background:rgba(255,255,255,.05);
+    color:var(--text);
+    border:1px solid var(--border);
+    padding:.55rem 1.1rem;
+    border-radius:12px;
+    font-weight:600;
+    transition:background .15s ease, border-color .15s ease, transform .12s ease;
+  }
+  .btn-outline:hover{ background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.2); transform:translateY(-1px) }
+  .btn-outline:active{ transform:none }
+
+  /* Small pill tag */
+  .tag{
+    display:inline-block;
+    padding:.25rem .6rem;
+    border-radius:9999px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.14);
+    font-weight:600;
+    color:#d4d4d8; /* zinc-300 */
+  }
+
+  /* Muted text */
+  .muted{ color:var(--muted) }
+
+  /* Simple nav bar polish (if you use a header) */
+  .nav{
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    background:linear-gradient(to bottom, rgba(10,10,10,.55), rgba(10,10,10,.25));
+    border-bottom:1px solid var(--border);
+  }
 }
 
-.btn-outline {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 0.5rem 1.2rem;
-  border-radius: 12px;
-  font-weight: 500;
-  transition: all 0.2s ease;
+/* ===== Post content typography tweaks ===== */
+.card p{
+  word-wrap:break-word;
+  line-height:1.55;
 }
 
-.btn-outline:hover {
-  background: rgba(255,255,255,0.1);
+/* ===== Animations ===== */
+@keyframes blob{
+  0%  { transform:translate3d(0,0,0) scale(1) }
+  33% { transform:translate3d(4vmax,3vmax,0) scale(1.08) }
+  66% { transform:translate3d(-3vmax,5vmax,0) scale(0.95) }
+  100%{ transform:translate3d(0,0,0) scale(1) }
 }
+
+/* ===== Forms (textarea) subtle tweaks ===== */
+textarea{
+  caret-color:#c084fc; /* violet-400 */
+}
+textarea::placeholder{ color:#a1a1aa } /* zinc-400 */
+
+/* ===== Footer tiny polish ===== */
+footer{ color:var(--muted) }
+
+/* ===== Optional: hover lift for clickable cards (links) ===== */
+a.card:hover{ text-decoration:none }
