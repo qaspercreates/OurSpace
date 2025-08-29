@@ -19,14 +19,8 @@ export default function PostForm() {
     if (!text.trim()) return;
     setBusy(true);
     try {
-      const payload: any = {
-        text: text.trim(),
-        tag,
-        likes: 0,
-        views: 0,
-      };
+      const payload: any = { text: text.trim(), tag, likes: 0, views: 0 };
       if (loc) {
-        // round coords to ~2 decimals (~1–10 km) to stay anonymous
         payload.city = loc.city;
         payload.country = loc.country;
         payload.lat = Number(loc.lat.toFixed(2));
@@ -34,9 +28,8 @@ export default function PostForm() {
       }
       const { error } = await supabase.from("Posts").insert(payload);
       if (error) throw error;
-      setText("");
-      setLoc(null);
-      window.location.reload(); // simple refresh to show new post
+      setText(""); setLoc(null);
+      window.location.reload();
     } catch (e:any) {
       alert(e.message || "Could not post");
     } finally {
@@ -47,19 +40,10 @@ export default function PostForm() {
   return (
     <div className="card stack-4">
       <div className="flex items-center gap-3">
-        <select
-          className="btn-outline text-sm"
-          value={tag}
-          onChange={(e) => setTag(e.target.value)}
-        >
-          {TAGS.map((t) => (
-            <option key={t} value={t}>{t}</option>
-          ))}
+        <select className="btn-outline text-sm" value={tag} onChange={(e) => setTag(e.target.value)}>
+          {TAGS.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
-
-        <div className="ml-auto text-sm text-[var(--muted)]">
-          {text.length}/{limit}
-        </div>
+        <div className="ml-auto text-sm text-[var(--muted)]">{text.length}/{limit}</div>
       </div>
 
       <textarea
