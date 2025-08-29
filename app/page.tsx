@@ -3,7 +3,6 @@ export default function HomePage() {
     <main>
       {/* HERO */}
       <section className="hero container">
-        {/* Big logo in the hero for brand punch */}
         <img
           src="/logo.svg"
           alt="OurSpace"
@@ -19,40 +18,32 @@ export default function HomePage() {
           (shares a clean screenshot).
         </p>
 
+        {/* single primary CTA only */}
         <div className="hero-cta">
           <a href="/feed" className="btn-primary">Enter the Feed</a>
         </div>
       </section>
 
       {/* FEATURES */}
-      <section className="container pb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <section className="container pb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="card">
           <div className="text-2xl mb-2">🕵️ Anonymous</div>
-          <p className="text-zinc-300">
-            No account. Post instantly. One-like-per-person (local guard).
-          </p>
+          <p className="text-zinc-300">No account. Post instantly. One-like-per-person (local guard).</p>
         </div>
         <div className="card">
           <div className="text-2xl mb-2">📈 Feels alive</div>
-          <p className="text-zinc-300">
-            Views tick when a card actually hits the screen.
-          </p>
+          <p className="text-zinc-300">Views tick when a card actually hits the screen.</p>
         </div>
         <div className="card">
           <div className="text-2xl mb-2">📸 Built to share</div>
-          <p className="text-zinc-300">
-            Share generates a post image for Snap/IG/TikTok and copies the link.
-          </p>
+          <p className="text-zinc-300">Share generates a post image for Snap/IG/TikTok and copies the link.</p>
         </div>
       </section>
 
-      {/* QUICK INFO STRIP */}
+      {/* INFO STRIP (no button) */}
       <section className="container pb-12">
-        <div className="card flex flex-col md:flex-row items-center justify-between gap-3">
-          <p className="text-zinc-300 text-center md:text-left">
-            No sign-ups • No DMs • Pure read-only vibe (comment by sharing to socials)
-          </p>
-          <a href="/feed" className="btn-outline">Browse latest posts</a>
+        <div className="card text-center text-zinc-300">
+          No sign-ups • No DMs • Pure read-only vibe (comment by sharing to socials)
         </div>
       </section>
     </main>
