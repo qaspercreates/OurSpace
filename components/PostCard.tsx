@@ -33,7 +33,7 @@ export default function PostCard({ post }: { post: Post }) {
     return c || co || null;
   }, [post.city, post.country]);
 
-  // bump views once when visible
+  // bump views
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
@@ -46,7 +46,7 @@ export default function PostCard({ post }: { post: Post }) {
           setViews((v) => v + 1);
           try {
             await supabase
-              .from("posts") // LOWERCASE TABLE
+              .from("posts")
               .update({ views: (post.views ?? 0) + 1 })
               .eq("id", post.id);
           } catch {
@@ -63,7 +63,6 @@ export default function PostCard({ post }: { post: Post }) {
 
   async function like() {
     if (liking) return;
-    // very light "one like per browser" guard
     const key = `liked:${post.id}`;
     if (typeof window !== "undefined" && localStorage.getItem(key)) return;
 
@@ -71,7 +70,7 @@ export default function PostCard({ post }: { post: Post }) {
     setLikes((l) => l + 1);
     try {
       await supabase
-        .from("posts") // LOWERCASE TABLE
+        .from("posts")
         .update({ likes: (post.likes ?? 0) + 1 })
         .eq("id", post.id);
       if (typeof window !== "undefined") localStorage.setItem(key, "1");
@@ -90,12 +89,12 @@ export default function PostCard({ post }: { post: Post }) {
       const dataUrl = await toPng(el, {
         cacheBust: true,
         backgroundColor: "#ffffff",
-        pixelRatio: 2
+        pixelRatio: 2,
       });
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], "ourspace-post.png", { type: "image/png" });
 
-      // Native share if available
+      // Native share
       // @ts-ignore
       if (navigator.share && (navigator as any).canShare?.({ files: [file] })) {
         // @ts-ignore
@@ -103,7 +102,6 @@ export default function PostCard({ post }: { post: Post }) {
         return;
       }
 
-      // Fallback: open image in new tab
       const w = window.open();
       if (w) {
         w.document.write(`<meta name="viewport" content="width=device-width, initial-scale=1" />`);
@@ -123,7 +121,6 @@ export default function PostCard({ post }: { post: Post }) {
 
   return (
     <article ref={cardRef} className="card card--padded post">
-      {/* header */}
       <div className="post__header">
         <div className="flex items-center gap-2">
           <span className="badge">{post.tag || "Random"}</span>
@@ -132,16 +129,14 @@ export default function PostCard({ post }: { post: Post }) {
         <span className="text-xs opacity-70">{timestamp}</span>
       </div>
 
-      {/* body */}
       <div className="post__body whitespace-pre-wrap">{post.text}</div>
 
-      {/* footer */}
       <div className="post__footer">
-        <button className="btn btn-ghost" onClick={like} disabled={liking} title="Like">
+        <button className="btn btn-ghost" onClick={like} disabled={liking}>
           ❤️ {likes}
         </button>
         <span className="opacity-70">👁️ {views}</span>
-        <button className="btn btn-ghost" onClick={shareImage} title="Share as image">
+        <button className="btn btn-ghost" onClick={shareImage}>
           🔗 Share
         </button>
       </div>
