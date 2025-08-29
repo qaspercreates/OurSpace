@@ -1,11 +1,20 @@
-export default {
-  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
       colors: {
-        brand: { 500: "#6c47ff", 600: "#5a39e6", 700: "#452bbd" }
-      }
-    }
+        brand: {
+          light: "#60a5fa", // light blue
+          DEFAULT: "#3b82f6", // primary blue
+          dark: "#1e40af", // dark blue
+        },
+      },
+    },
   },
-  plugins: []
+  plugins: [],
 };
