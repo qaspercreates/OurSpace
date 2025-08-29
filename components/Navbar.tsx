@@ -1,24 +1,27 @@
 "use client";
+
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
-export default function NavBar() {
-  const pathname = usePathname();
-  const isHome = pathname === "/";
-  const onFeed = pathname?.startsWith("/feed");
-
+export default function Navbar() {
   return (
-    <header className="nav">
-      <div className="container h-14 flex items-center justify-between">
-        <Link href="/" className="brand flex items-center gap-2">
-          <img src="/logo.svg" alt="OurSpace" />
+    <header className="header">
+      <div className="container navbar">
+        <Link href="/" className="brand" aria-label="OurSpace home">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#6b8cff"/><stop offset="1" stopColor="#33cabb"/>
+              </linearGradient>
+            </defs>
+            <circle cx="12" cy="12" r="10" stroke="url(#g)" strokeWidth="2" fill="none"/>
+            <path d="M12 7v10M7 12h10" stroke="url(#g)" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+          <span className="brand-name">OurSpace</span>
         </Link>
-        <div className="flex items-center gap-2">
-          <Link href="/map" className="btn-outline text-sm">Map</Link>
-          {!(isHome || onFeed) && (
-            <Link href="/feed" className="btn-outline text-sm">Enter the Feed</Link>
-          )}
-        </div>
+
+        <nav className="flex items-center gap-3">
+          <Link href="/feed" className="btn-primary" style={{padding:"8px 12px"}}>Enter the Feed</Link>
+        </nav>
       </div>
     </header>
   );
