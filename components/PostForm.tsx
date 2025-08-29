@@ -1,89 +1,82 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase";
+import LocationPicker from "./LocationPicker";
+import { City } from "@/data/cities";
 
-const TAGS = [
-  "Random",
-  "Funny",
-  "Storytime",
-  "Advice",
-  "Confession",
-  "Hot Take",
-  "Wholesome",
-  "Love",
-  "Friendship",
-  "School",
-  "Work",
-  "Money",
-  "Tech",
-  "Gaming",
-  "Sports",
-  "Music",
-  "Movies/TV",
-  "Books",
-  "News",
-  "Travel",
-  "Food",
-  "Fitness",
-  "Mental Health",
-  "Small Win",
-];
+const TAGS = ["Random","Advice","Confession","Storytime","Funny","Angry","Sad","Wholesome","News","Tech"];
 
-export default function PostForm({ onPosted }: { onPosted: () => void }) {
-  const [text, setText] = useState("");
+export default function PostForm() {
+  const supabase = createClient();
   const [tag, setTag] = useState(TAGS[0]);
-  const [loading, setLoading] = useState(false);
+  const [text, setText] = useState("");
+  const [loc, setLoc] = useState<City | null>(null);
+  const [busy, setBusy] = useState(false);
+  const limit = 280;
 
-  const submit = async () => {
+  async function submit() {
     if (!text.trim()) return;
-    setLoading(true);
-    const { error } = await supabase
-      .from("posts")
-      .insert({ text, tag, likes: 0, views: 0 });
-    setLoading(false);
-    if (error) {
-      alert("Could not post. Try again.");
-      return;
+    setBusy(true);
+    try {
+      const payload: any = {
+        text: text.trim(),
+        tag,
+        likes: 0,
+        views: 0,
+      };
+      if (loc) {
+        // round coords to ~2 decimals (~1–10 km) to stay anonymous
+        payload.city = loc.city;
+        payload.country = loc.country;
+        payload.lat = Number(loc.lat.toFixed(2));
+        payload.lng = Number(loc.lng.toFixed(2));
+      }
+      const { error } = await supabase.from("Posts").insert(payload);
+      if (error) throw error;
+      setText("");
+      setLoc(null);
+      window.location.reload(); // simple refresh to show new post
+    } catch (e:any) {
+      alert(e.message || "Could not post");
+    } finally {
+      setBusy(false);
     }
-    setText("");
-    setTag(TAGS[0]);
-    onPosted();
-  };
+  }
 
   return (
-    <div className="card">
-      <div className="flex items-start gap-3">
+    <div className="card stack-4">
+      <div className="flex items-center gap-3">
         <select
+          className="btn-outline text-sm"
           value={tag}
           onChange={(e) => setTag(e.target.value)}
-          className="min-w-[9rem] md:min-w-[12rem] bg-black/30 border border-white/10 rounded-md py-2 px-3 outline-none focus:ring-2 focus:ring-purple-400"
         >
           {TAGS.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
+            <option key={t} value={t}>{t}</option>
           ))}
         </select>
 
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value.slice(0, 280))}
-          placeholder="What’s on your mind?"
-          rows={3}
-          className="flex-1 bg-black/20 border border-white/10 rounded-md p-3 outline-none focus:ring-2 focus:ring-blue-400"
-        />
-
-        <button
-          onClick={submit}
-          disabled={loading || !text.trim()}
-          className="btn-primary self-start"
-        >
-          {loading ? "Posting…" : "Post"}
-        </button>
+        <div className="ml-auto text-sm text-[var(--muted)]">
+          {text.length}/{limit}
+        </div>
       </div>
 
-      <div className="mt-2 text-sm text-zinc-400">{text.length}/280</div>
+      <textarea
+        rows={3}
+        maxLength={limit}
+        placeholder="What's on your mind?"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+
+      <LocationPicker value={loc} onChange={setLoc} />
+
+      <div className="flex justify-end">
+        <button onClick={submit} disabled={busy} className="btn-primary">
+          {busy ? "Posting..." : "Post"}
+        </button>
+      </div>
     </div>
   );
 }
