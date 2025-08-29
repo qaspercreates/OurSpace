@@ -1,48 +1,79 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
+import PostForm from "@/components/PostForm";
+import PostCard from "@/components/PostCard";
+import { createClient } from "@/lib/supabase";
+
+type Post = {
+  id: string;
+  text: string;
+  tag: string | null;
+  likes: number;
+  views: number;
+  created_at: string;
+  city?: string | null;
+  country?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+};
+
+const PAGE_SIZE = 10;
 
 export default function FeedPage() {
-  const [posts, setPosts] = useState<any[]>([]);
+  const supabase = createClient();
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [page, setPage] = useState(0);
+  const [more, setMore] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  async function load(initial = false) {
+    const from = initial ? 0 : page * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    const { data, error } = await supabase
+      .from("posts") // lowercase table name
+      .select("*")
+      .order("created_at", { ascending: false })
+      .range(from, to);
+
+    if (error) {
+      console.error("Fetch error:", error);
+      return;
+    }
+
+    setPosts((prev) => (initial ? (data as Post[]) : [...prev, ...(data as Post[])]));
+    setMore((data?.length ?? 0) === PAGE_SIZE);
+    setPage((p) => (initial ? 1 : p + 1));
+    setLoading(false);
+  }
 
   useEffect(() => {
-    // TODO: replace with supabase fetch
-    setPosts([
-      { id: 1, text: "hello world", likes: 2, views: 15 },
-      { id: 2, text: "my secret", likes: 1, views: 10 },
-    ]);
+    load(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
       <Navbar />
       <main className="container section stack-y">
-        <div className="card card--padded">
-          <textarea
-            className="input"
-            placeholder="What's on your mind?"
-            rows={3}
-          />
-          <div className="flex justify-between items-center mt-2">
-            <span className="counter">0/280</span>
-            <button className="btn btn-primary">Post</button>
-          </div>
-        </div>
+        <PostForm onPosted={() => load(true)} />
 
         <div className="stack-y">
           {posts.map((p) => (
-            <div key={p.id} className="card card--padded post">
-              <div className="post__header">
-                <span>Anonymous</span>
-                <span className="text-xs">{p.views} views</span>
-              </div>
-              <div className="post__body">{p.text}</div>
-              <div className="post__footer">
-                <span>❤️ {p.likes}</span>
-                <button className="btn-link">Share</button>
-              </div>
-            </div>
+            <PostCard key={p.id} post={p} />
           ))}
+        </div>
+
+        <div className="flex justify-center mt-6">
+          {more ? (
+            <button className="btn btn-outline" onClick={() => load(false)}>
+              Load more
+            </button>
+          ) : (
+            !loading && <span className="text-sm opacity-70">No more posts</span>
+          )}
         </div>
       </main>
     </>
