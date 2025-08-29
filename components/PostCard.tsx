@@ -1,107 +1,126 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import { elementToPngBlob } from "@/lib/capture";
+import { createClient } from "@/lib/supabase";
+import { toPng } from "html-to-image";
 import clsx from "clsx";
 
-export default function PostCard({ post }: { post: any }) {
-  const [likes, setLikes] = useState<number>(post.likes || 0);
-  const [views, setViews] = useState<number>(post.views || 0);
-  const [liked, setLiked] = useState<boolean>(false);
+type Post = {
+  id: string;
+  text: string;
+  tag: string | null;
+  likes: number;
+  views: number;
+  created_at: string;
+  city?: string | null;
+  country?: string | null;
+};
+
+export default function PostCard({ post }: { post: Post }) {
+  const supabase = createClient();
+  const [likes, setLikes] = useState(post.likes ?? 0);
+  const [views, setViews] = useState(post.views ?? 0);
+  const [liking, setLiking] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const viewedRef = useRef(false);
 
-  useEffect(() => {
-    setLiked(localStorage.getItem(`liked_${post.id}`) === "1");
-  }, [post.id]);
-
-  // Count a view once when the card enters viewport
+  // Increment views when the card actually hits the screen (once)
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
-    let done = false;
-    const obs = new IntersectionObserver(async (entries) => {
-      entries.forEach(async (ent) => {
-        if (ent.isIntersecting && !done) {
-          done = true;
-          const { data, error } = await supabase.rpc("bump_views", { p_id: post.id });
-          if (!error && data) setViews((data as any).views);
-          else if (error) console.error("View update error:", error);
+
+    const io = new IntersectionObserver(
+      async (entries) => {
+        const e = entries[0];
+        if (e.isIntersecting && !viewedRef.current) {
+          viewedRef.current = true;
+          setViews((v) => v + 1);
+          await supabase.rpc("increment_views", { row_id: post.id }).catch(() => {});
         }
-      });
-    }, { threshold: 0.5 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [post.id]);
+      },
+      { threshold: 0.6 }
+    );
 
-  const like = async () => {
-    if (liked) return;
-    const { data, error } = await supabase.rpc("bump_likes", { p_id: post.id });
-    if (error) {
-      console.error("Like update error:", error);
-      alert("Error: " + error.message);
-      return;
-    }
-    setLiked(true);
-    localStorage.setItem(`liked_${post.id}`, "1");
-    if (data) setLikes((data as any).likes);
-  };
+    io.observe(el);
+    return () => io.disconnect();
+  }, [post.id, supabase]);
 
-  const share = async () => {
+  async function like() {
+    if (liking) return;
+    setLiking(true);
+    setLikes((l) => l + 1);
     try {
-      const el = cardRef.current!;
-      // Optional inset to give a margin in stories
-      el.style.boxShadow = "0 0 0 12px #000 inset";
-      const blob = await elementToPngBlob(el);
-      el.style.boxShadow = "";
-
-      const file = new File([blob], "ourspace-post.png", { type: "image/png" });
-
-      // If device supports file share, share **image only** (no caption)
-      if ((navigator as any).canShare?.({ files: [file] })) {
-        await (navigator as any).share({
-          files: [file],
-          title: "OurSpace" // no `text` -> no caption
-        });
-        return;
-      }
-
-      // Fallback: download the image so user can upload it anywhere
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "ourspace-post.png";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      // Optionally also copy a link for convenience (no forced caption)
-      const url = `${location.origin}/feed#${post.id}`;
-      await navigator.clipboard.writeText(url);
-      alert("Saved image to your device and copied the link.");
-    } catch (e: any) {
-      console.error("Share failed:", e);
-      // Last fallback: just copy link
-      const url = `${location.origin}/feed#${post.id}`;
-      await navigator.clipboard.writeText(url);
-      alert("Couldn’t create an image here. Link copied!");
+      await supabase.rpc("increment_likes", { row_id: post.id });
+    } catch {
+      setLikes((l) => Math.max(0, l - 1));
+    } finally {
+      setLiking(false);
     }
-  };
+  }
 
-  const time = new Date(post.created_at).toLocaleString();
+  async function shareImage() {
+    const el = cardRef.current;
+    if (!el) return;
+    try {
+      const dataUrl = await toPng(el, {
+        cacheBust: true,
+        backgroundColor: "#ffffff",
+        pixelRatio: 2
+      });
+      const blob = await (await fetch(dataUrl)).blob();
+      // Try native share
+      if (navigator.share && (navigator as any).canShare?.({ files: [new File([blob], "ourspace.png", { type: "image/png" })] })) {
+        await navigator.share({
+          title: "OurSpace",
+          text: "",
+          files: [new File([blob], "ourspace.png", { type: "image/png" })]
+        });
+      } else {
+        // fallback: open image in a new tab
+        const w = window.open();
+        if (w) {
+          w.document.write(`<img src="${dataUrl}" style="width:100%;height:auto"/>`);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Could not generate image");
+    }
+  }
+
+  const created = new Date(post.created_at);
 
   return (
-    <article ref={cardRef} id={post.id} className="card">
-      <div className="flex items-center justify-between text-xs muted mb-2">
-        <span className="tag">{post.tag}</span>
-        <span>{time}</span>
+    <article ref={cardRef} className="card">
+      <div className="mb-2 flex items-center justify-between text-sm">
+        <span className="inline-flex items-center gap-2">
+          <span className="rounded-full border px-2 py-0.5 text-xs">{post.tag ?? "Random"}</span>
+          {post.city ? (
+            <span className="text-[var(--muted)] text-xs">{post.city}{post.country ? `, ${post.country}` : ""}</span>
+          ) : null}
+        </span>
+        <time className="text-[var(--muted)] text-xs">
+          {created.toLocaleDateString()} {created.toLocaleTimeString()}
+        </time>
       </div>
-      <p className="text-lg leading-relaxed whitespace-pre-wrap">{post.text}</p>
-      <div className="flex items-center gap-6 mt-4 text-sm">
-        <button onClick={like} className={clsx("hover:opacity-80", liked && "opacity-60 cursor-default")}>
+
+      <p className="whitespace-pre-wrap text-[1.025rem]" style={{ lineHeight: 1.55 }}>{post.text}</p>
+
+      <div className="mt-3 flex items-center gap-4 text-sm">
+        <button
+          onClick={like}
+          disabled={liking}
+          className={clsx("btn-outline", liking && "opacity-70")}
+          aria-label="Like"
+        >
           ❤️ {likes}
         </button>
-        <span>👁 {views}</span>
-        <button onClick={share}>🔗 Share</button>
+
+        <span className="text-[var(--muted)]">👁️ {views}</span>
+
+        <button onClick={shareImage} className="btn-outline" aria-label="Share">
+          🔗 Share
+        </button>
       </div>
     </article>
   );
