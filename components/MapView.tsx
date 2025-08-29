@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
 import { createClient } from "@/lib/supabase";
 
-type Row = { city: string | null; country: string | null; lat: number | null; lng: number | null };
+type Row = { city: string | null; country: string | null; lat: number | null; lng: number | null; created_at?: string };
 
 export default function MapView() {
   const supabase = createClient();
@@ -13,7 +13,7 @@ export default function MapView() {
   useEffect(() => {
     (async () => {
       const { data, error } = await supabase
-        .from("Posts")
+        .from("posts")
         .select("city,country,lat,lng,created_at")
         .not("lat", "is", null)
         .not("lng", "is", null)
@@ -23,7 +23,7 @@ export default function MapView() {
     })();
   }, []);
 
-  // cluster by 0.1° bins to keep it city-level
+  // cluster by ~city area (0.1° bins)
   const clusters = useMemo(() => {
     const m = new Map<string, { city?: string; country?: string; lat: number; lng: number; count: number }>();
     for (const r of rows) {
