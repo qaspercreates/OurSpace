@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase";
 import { toPng } from "html-to-image";
-import clsx from "clsx";
 
 type Post = {
   id: string;
@@ -18,13 +17,23 @@ type Post = {
 
 export default function PostCard({ post }: { post: Post }) {
   const supabase = createClient();
-  const [likes, setLikes] = useState(post.likes ?? 0);
-  const [views, setViews] = useState(post.views ?? 0);
+
+  const [likes, setLikes] = useState<number>(post.likes ?? 0);
+  const [views, setViews] = useState<number>(post.views ?? 0);
   const [liking, setLiking] = useState(false);
+
   const cardRef = useRef<HTMLDivElement>(null);
   const viewedRef = useRef(false);
 
-  // Increment views when the card actually hits the screen (once)
+  const locLabel = useMemo(() => {
+    const c = post.city?.trim();
+    const co = post.country?.trim();
+    if (!c && !co) return null;
+    if (c && co) return `${c}, ${co}`;
+    return c || co || null;
+  }, [post.city, post.country]);
+
+  // bump views once when visible
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
@@ -35,24 +44,40 @@ export default function PostCard({ post }: { post: Post }) {
         if (e.isIntersecting && !viewedRef.current) {
           viewedRef.current = true;
           setViews((v) => v + 1);
-          await supabase.rpc("increment_views", { row_id: post.id }).catch(() => {});
+          try {
+            await supabase
+              .from("posts") // LOWERCASE TABLE
+              .update({ views: (post.views ?? 0) + 1 })
+              .eq("id", post.id);
+          } catch {
+            /* ignore */
+          }
         }
       },
-      { threshold: 0.6 }
+      { threshold: 0.55 }
     );
 
     io.observe(el);
     return () => io.disconnect();
-  }, [post.id, supabase]);
+  }, [post.id, post.views, supabase]);
 
   async function like() {
     if (liking) return;
+    // very light "one like per browser" guard
+    const key = `liked:${post.id}`;
+    if (typeof window !== "undefined" && localStorage.getItem(key)) return;
+
     setLiking(true);
     setLikes((l) => l + 1);
     try {
-      await supabase.rpc("increment_likes", { row_id: post.id });
+      await supabase
+        .from("posts") // LOWERCASE TABLE
+        .update({ likes: (post.likes ?? 0) + 1 })
+        .eq("id", post.id);
+      if (typeof window !== "undefined") localStorage.setItem(key, "1");
     } catch {
       setLikes((l) => Math.max(0, l - 1));
+      if (typeof window !== "undefined") localStorage.removeItem(key);
     } finally {
       setLiking(false);
     }
@@ -68,19 +93,21 @@ export default function PostCard({ post }: { post: Post }) {
         pixelRatio: 2
       });
       const blob = await (await fetch(dataUrl)).blob();
-      // Try native share
-      if (navigator.share && (navigator as any).canShare?.({ files: [new File([blob], "ourspace.png", { type: "image/png" })] })) {
-        await navigator.share({
-          title: "OurSpace",
-          text: "",
-          files: [new File([blob], "ourspace.png", { type: "image/png" })]
-        });
-      } else {
-        // fallback: open image in a new tab
-        const w = window.open();
-        if (w) {
-          w.document.write(`<img src="${dataUrl}" style="width:100%;height:auto"/>`);
-        }
+      const file = new File([blob], "ourspace-post.png", { type: "image/png" });
+
+      // Native share if available
+      // @ts-ignore
+      if (navigator.share && (navigator as any).canShare?.({ files: [file] })) {
+        // @ts-ignore
+        await navigator.share({ title: "OurSpace", text: "", files: [file] });
+        return;
+      }
+
+      // Fallback: open image in new tab
+      const w = window.open();
+      if (w) {
+        w.document.write(`<meta name="viewport" content="width=device-width, initial-scale=1" />`);
+        w.document.write(`<img src="${dataUrl}" style="width:100%;height:auto" />`);
       }
     } catch (e) {
       console.error(e);
@@ -89,36 +116,32 @@ export default function PostCard({ post }: { post: Post }) {
   }
 
   const created = new Date(post.created_at);
+  const timestamp = `${created.toLocaleDateString()} ${created.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
 
   return (
-    <article ref={cardRef} className="card">
-      <div className="mb-2 flex items-center justify-between text-sm">
-        <span className="inline-flex items-center gap-2">
-          <span className="rounded-full border px-2 py-0.5 text-xs">{post.tag ?? "Random"}</span>
-          {post.city ? (
-            <span className="text-[var(--muted)] text-xs">{post.city}{post.country ? `, ${post.country}` : ""}</span>
-          ) : null}
-        </span>
-        <time className="text-[var(--muted)] text-xs">
-          {created.toLocaleDateString()} {created.toLocaleTimeString()}
-        </time>
+    <article ref={cardRef} className="card card--padded post">
+      {/* header */}
+      <div className="post__header">
+        <div className="flex items-center gap-2">
+          <span className="badge">{post.tag || "Random"}</span>
+          {locLabel && <span className="badge">📍 {locLabel}</span>}
+        </div>
+        <span className="text-xs opacity-70">{timestamp}</span>
       </div>
 
-      <p className="whitespace-pre-wrap text-[1.025rem]" style={{ lineHeight: 1.55 }}>{post.text}</p>
+      {/* body */}
+      <div className="post__body whitespace-pre-wrap">{post.text}</div>
 
-      <div className="mt-3 flex items-center gap-4 text-sm">
-        <button
-          onClick={like}
-          disabled={liking}
-          className={clsx("btn-outline", liking && "opacity-70")}
-          aria-label="Like"
-        >
+      {/* footer */}
+      <div className="post__footer">
+        <button className="btn btn-ghost" onClick={like} disabled={liking} title="Like">
           ❤️ {likes}
         </button>
-
-        <span className="text-[var(--muted)]">👁️ {views}</span>
-
-        <button onClick={shareImage} className="btn-outline" aria-label="Share">
+        <span className="opacity-70">👁️ {views}</span>
+        <button className="btn btn-ghost" onClick={shareImage} title="Share as image">
           🔗 Share
         </button>
       </div>
