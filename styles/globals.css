@@ -1,116 +1,36 @@
-/* --- Reset & base --- */
-*,
-*::before,
-*::after { box-sizing: border-box; }
-html, body { height: 100%; }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles */
 body {
-  margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
-  color: var(--fg);
-  background:
-    radial-gradient(1200px 600px at 20% 0%, rgba(86,139,255,.25), transparent 60%),
-    radial-gradient(1200px 600px at 80% 10%, rgba(0,196,204,.22), transparent 55%),
-    radial-gradient(1000px 600px at 50% 100%, rgba(146, 118, 255, .18), transparent 60%),
-    linear-gradient(180deg, #f7f8fb 0%, #f2f4f8 40%, #f7f8fb 100%);
-  background-attachment: fixed, fixed, fixed, fixed; /* one continuous background */
+  @apply bg-gradient-to-br from-white via-gray-100 to-gray-200 text-gray-900 min-h-screen;
+  font-family: 'Inter', sans-serif;
 }
 
-/* --- Light theme tokens --- */
-:root{
-  --fg: #0f172a;             /* slate-900 */
-  --muted: #64748b;          /* slate-500 */
-  --card: rgba(255,255,255,.75);
-  --card-border: rgba(15,23,42,.08);
-  --ring: rgba(59,130,246,.35);
-  --shadow: 0 10px 30px rgba(15,23,42,.08), 0 1px 0 rgba(15,23,42,.05);
-  --btn: linear-gradient(135deg,#6b8cff 0%, #35d3c9 100%);
-  --btn-ring: rgba(104,117,245,.45);
-  --radius: 14px;
+/* Glass effect cards */
+.card {
+  @apply bg-white/70 backdrop-blur-lg shadow-md rounded-lg p-4 border border-gray-200;
 }
 
-/* --- Layout helpers --- */
-.container{
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 28px 20px;
-}
-.stack-2 > * + * { margin-top: .5rem; }
-.stack-3 > * + * { margin-top: .75rem; }
-.stack-4 > * + * { margin-top: 1rem; }
-
-/* --- Header / nav --- */
-.header {
-  position: sticky; top: 0; z-index: 10;
-  backdrop-filter: saturate(140%) blur(8px);
-  background: linear-gradient(180deg, rgba(255,255,255,.9) 0%, rgba(255,255,255,.65) 100%);
-  border-bottom: 1px solid rgba(15,23,42,.06);
-}
-.navbar { display:flex; align-items:center; justify-content:space-between; height:64px; }
-.brand { display:flex; align-items:center; gap:.6rem; font-weight:800; letter-spacing:.2px; }
-.brand svg { width:28px; height:28px; }
-.brand-name {
-  font-size: 1.15rem;
-  background: linear-gradient(90deg,#5b7cfa,#33cabb);
-  -webkit-background-clip: text; background-clip:text; color: transparent;
+/* Buttons */
+.btn {
+  @apply px-4 py-2 rounded-lg font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 shadow hover:from-blue-600 hover:to-purple-600 transition;
 }
 
-/* --- Hero --- */
-.hero { text-align:center; padding: 52px 0 22px; }
-.badge {
-  display:inline-block; padding:6px 10px; border-radius:999px;
-  font-size:.75rem; font-weight:600; letter-spacing:.2px;
-  color:#0f172a; background:rgba(255,255,255,.8); border:1px solid var(--card-border);
-  box-shadow: var(--shadow);
+.btn-outline {
+  @apply px-4 py-2 rounded-lg font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition;
 }
-.hero-title{
-  margin:.6rem 0 1rem;
-  font-size: clamp(2rem, 5.2vw, 3.25rem);
-  line-height: 1.05; letter-spacing: -0.02em;
-  background: linear-gradient(90deg,#6b8cff 0%, #3ad1c6 100%);
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-}
-.hero-sub{ color:var(--muted); max-width:740px; margin:0 auto 1.2rem; }
 
-/* --- Cards --- */
-.card{
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  box-shadow: var(--shadow);
-  border-radius: var(--radius);
-  padding: 16px 18px;
+/* Headings */
+h1, h2, h3, h4 {
+  @apply font-bold;
 }
-.card.dense{ padding: 14px 16px; }
 
-/* --- Buttons & inputs --- */
-button, .btn {
-  appearance:none; border:none; cursor:pointer;
-  border-radius: 12px; font-weight:700;
+h1 {
+  @apply text-4xl sm:text-5xl mb-4;
 }
-.btn-primary{
-  padding: 10px 16px; color: white;
-  background: var(--btn);
-  box-shadow: 0 6px 20px rgba(99,102,241,.25), inset 0 1px 0 rgba(255,255,255,.2);
-}
-.btn-primary:focus-visible{ outline:2px solid var(--btn-ring); outline-offset:2px; }
-.btn-outline{
-  padding: 8px 12px; background:white; color:#0f172a;
-  border:1px solid var(--card-border);
-}
-select, textarea, input{
-  width:100%; border:1px solid var(--card-border); background:white;
-  padding:10px 12px; border-radius: 12px; color:var(--fg);
-}
-textarea{ resize: vertical; }
 
-/* --- Post list spacing --- */
-.post-list > * + * { margin-top: .9rem; }
-
-/* --- Small utilities --- */
-.flex{ display:flex; } .items-center{ align-items:center; } .justify-between{ justify-content:space-between; }
-.justify-center{ justify-content:center; } .gap-2{ gap:.5rem; } .gap-3{ gap:.75rem; }
-.text-sm{ font-size:.9rem; } .text-xs{ font-size:.78rem; }
-.muted{ color:var(--muted); }
-.center { text-align:center; }
-
-/* Footer */
-footer { color:var(--muted); text-align:center; padding: 28px 0 40px; }
+h2 {
+  @apply text-2xl sm:text-3xl mb-3;
+}
