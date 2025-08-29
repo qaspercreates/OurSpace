@@ -10,8 +10,8 @@ export default function NavBar() {
   return (
     <header className="nav">
       <div className="container h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <img src="/logo.svg" alt="OurSpace" className="h-12 w-auto" />
+        <Link href="/" className="brand flex items-center gap-2">
+          <img src="/logo.svg" alt="OurSpace" />
         </Link>
         <div className="flex items-center gap-2">
           <Link href="/map" className="btn-outline text-sm">Map</Link>
