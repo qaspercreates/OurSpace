@@ -16,17 +16,14 @@ export default function NavBar() {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/15" />
       </div>
 
-      {/* keep header short, boost logo size */}
+      {/* short header; big logo inside */}
       <div className="container relative h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <img
-            src="/logo.svg"
-            alt="OurSpace"
-            className={isHome ? "h-12 w-auto drop-shadow" : "h-11 w-auto drop-shadow"}
-          />
+          {/* bumped up: h-12 inside a 56px bar */}
+          <img src="/logo.svg" alt="OurSpace" className="h-12 w-auto drop-shadow" />
         </Link>
 
-        {/* no CTA in header on home or feed */}
+        {/* hide CTA on home & feed */}
         {!(isHome || onFeed) && (
           <Link href="/feed" className="btn-outline text-sm md:text-base">
             Enter the Feed
