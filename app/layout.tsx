@@ -1,9 +1,9 @@
-import "./styles/globals.css";
+import "@/styles/globals.css";
 import Navbar from "@/components/Navbar";
 
 export const metadata = {
   title: "OurSpace",
-  description: "Say anything. Read everything.",
+  description: "Say anything. Read everything."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
