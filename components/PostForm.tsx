@@ -5,7 +5,10 @@ import { createClient } from "@/lib/supabase";
 import LocationPicker from "./LocationPicker";
 import { City } from "@/data/cities";
 
-const TAGS = ["Random","Advice","Confession","Storytime","Funny","Angry","Sad","Wholesome","News","Tech"];
+const TAGS = [
+  "Random","Advice","Confession","Storytime","Funny",
+  "Angry","Sad","Wholesome","News","Tech"
+];
 
 export default function PostForm() {
   const supabase = createClient();
@@ -26,11 +29,12 @@ export default function PostForm() {
         payload.lat = Number(loc.lat.toFixed(2));
         payload.lng = Number(loc.lng.toFixed(2));
       }
-      const { error } = await supabase.from("Posts").insert(payload);
+      const { error } = await supabase.from("posts").insert(payload);
       if (error) throw error;
       setText(""); setLoc(null);
+      // refresh list
       window.location.reload();
-    } catch (e:any) {
+    } catch (e: any) {
       alert(e.message || "Could not post");
     } finally {
       setBusy(false);
