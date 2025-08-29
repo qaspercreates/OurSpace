@@ -1,10 +1,9 @@
-import "../styles/globals.css";
+import "./styles/globals.css";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "OurSpace — The internet, unfiltered.",
-  description: "Say anything. Read everything. Anonymous X-style feed with likes, views, and share."
+  title: "OurSpace",
+  description: "Say anything. Read everything.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -12,8 +11,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Navbar />
-        <main className="container min-h-[70vh] py-8">{children}</main>
-        <Footer />
+        {children}
+        <footer>OurSpace — The internet, unfiltered.</footer>
       </body>
     </html>
   );
