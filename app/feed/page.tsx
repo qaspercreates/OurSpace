@@ -1,58 +1,50 @@
 "use client";
-
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase";
-import PostForm from "@/components/PostForm";
-import PostCard from "@/components/PostCard";
-
-type Post = {
-  id: string; text: string; tag: string | null; likes: number; views: number; created_at: string;
-  city?: string | null; country?: string | null; lat?: number | null; lng?: number | null;
-};
-
-const PAGE_SIZE = 10;
+import Navbar from "@/components/Navbar";
 
 export default function FeedPage() {
-  const supabase = createClient();
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [page, setPage] = useState(0);
-  const [more, setMore] = useState(true);
-  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<any[]>([]);
 
-  async function load(initial=false){
-    const from = (initial ? 0 : page*PAGE_SIZE);
-    const to = from + PAGE_SIZE - 1;
-    const { data, error } = await supabase
-      .from("posts")
-      .select("id,text,tag,likes,views,created_at,city,country,lat,lng")
-      .order("created_at",{ascending:false})
-      .range(from,to);
-    if (error) { console.error(error); return; }
-    setPosts(prev => initial ? (data as Post[]) : [...prev, ...(data as Post[])]);
-    setMore((data?.length ?? 0) === PAGE_SIZE);
-    setPage(p => initial ? 1 : p+1);
-    setLoading(false);
-  }
-
-  useEffect(() => { load(true); /* eslint-disable-next-line */ }, []);
+  useEffect(() => {
+    // TODO: replace with supabase fetch
+    setPosts([
+      { id: 1, text: "hello world", likes: 2, views: 15 },
+      { id: 2, text: "my secret", likes: 1, views: 10 },
+    ]);
+  }, []);
 
   return (
-    <main className="container">
-      <div className="hero" style={{paddingTop:"10px", paddingBottom:"0"}}>
-        <h2 className="badge">Welcome</h2>
-      </div>
+    <>
+      <Navbar />
+      <main className="container section stack-y">
+        <div className="card card--padded">
+          <textarea
+            className="input"
+            placeholder="What's on your mind?"
+            rows={3}
+          />
+          <div className="flex justify-between items-center mt-2">
+            <span className="counter">0/280</span>
+            <button className="btn btn-primary">Post</button>
+          </div>
+        </div>
 
-      <section className="stack-4">
-        <PostForm />
-        <div className="post-list">
-          {posts.map(p => <PostCard key={p.id} post={p} />)}
+        <div className="stack-y">
+          {posts.map((p) => (
+            <div key={p.id} className="card card--padded post">
+              <div className="post__header">
+                <span>Anonymous</span>
+                <span className="text-xs">{p.views} views</span>
+              </div>
+              <div className="post__body">{p.text}</div>
+              <div className="post__footer">
+                <span>❤️ {p.likes}</span>
+                <button className="btn-link">Share</button>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="flex justify-center" style={{marginTop:"10px"}}>
-          {more ? (
-            <button className="btn-outline" onClick={() => load(false)}>Load more</button>
-          ) : (!loading && <span className="muted text-sm">No more posts</span>)}
-        </div>
-      </section>
-    </main>
+      </main>
+    </>
   );
 }
