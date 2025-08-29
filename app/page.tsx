@@ -1,88 +1,54 @@
-export default function HomePage() {
+import Link from "next/link";
+
+export default function Home() {
   return (
     <main>
-      {/* HERO */}
-      <section className="hero container">
-        <div className="mx-auto w-fit mb-2 px-3 py-1 rounded-full bg-white/70 border border-[rgba(15,23,42,.10)] text-sm text-[var(--muted)]">
-          This is Our Space
-        </div>
-
-        <h1 className="hero-title">
-          Say anything. Read everything.
-        </h1>
-
+      <section className="container hero">
+        <span className="badge">This is Our Space</span>
+        <h1 className="hero-title">Say anything. Read everything.</h1>
         <p className="hero-sub">
-          Instant, anonymous posts. No sign-ups. Tap ❤️ to like, 👁 to see reach, and share a clean
-          screenshot anywhere. No DMs. No comment wars. Just the world’s thoughts—unfiltered,
-          beautifully simple.
+          Instant, anonymous posts. No sign-ups. Tap ❤️ to like, 👁️ to see reach, and share a clean screenshot anywhere.
+          No DMs. No comment wars. Just the world’s thoughts—unfiltered, beautifully simple.
         </p>
+        <div className="center" style={{marginBottom: "18px"}}>
+          <Link href="/feed" className="btn-primary">Enter the Feed</Link>
+        </div>
 
-        <div className="hero-cta">
-          <a href="/feed" className="btn-primary">Enter the Feed</a>
+        <div className="stack-3">
+          <div className="card">
+            <strong>🙈 Anonymous by default</strong>
+            <div className="muted">No account. Post in seconds. One-like-per-person (local guard) keeps things honest.</div>
+          </div>
+          <div className="card">
+            <strong>📊 Lightweight signals</strong>
+            <div className="muted">Views tick when your post hits a screen. Likes are simple & public.</div>
+          </div>
+          <div className="card">
+            <strong>📸 Built to share</strong>
+            <div className="muted">Share exports a crisp post image and copies the link—perfect for Stories and chats.</div>
+          </div>
         </div>
-      </section>
 
-      {/* WHY OURSPACE */}
-      <section className="container grid grid-cols-1 md:grid-cols-3 gap-4 pb-10">
-        <div className="card">
-          <div className="text-2xl mb-2">🕵️ Anonymous by default</div>
-          <p className="text-[var(--muted)]">
-            No account. Post in seconds. One-like-per-person (local guard) keeps things honest
-            without tracking you.
-          </p>
-        </div>
-        <div className="card">
-          <div className="text-2xl mb-2">📊 Lightweight signals</div>
-          <p className="text-[var(--muted)]">
-            Views tick only when a post actually hits your screen. Likes are simple and public—
-            nothing to overthink.
-          </p>
-        </div>
-        <div className="card">
-          <div className="text-2xl mb-2">📸 Built to share</div>
-          <p className="text-[var(--muted)]">
-            Share creates a crisp image of the post and copies the link. Perfect for Stories, chats,
-            and broadcasts.
-          </p>
-        </div>
-      </section>
-
-      {/* WHAT YOU'LL FIND */}
-      <section className="container pb-10">
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-3">What people share here</h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-[var(--muted)]">
-            <li className="card">Hot takes that wouldn’t survive a comment section.</li>
-            <li className="card">Advice requests from strangers who actually read.</li>
-            <li className="card">Confessions & wins without chasing clout.</li>
-            <li className="card">Tiny stories, shower thoughts, late-night musings.</li>
-            <li className="card">Crowd wisdom on work, money, school, travel, fitness.</li>
-            <li className="card">Stuff people can’t post anywhere else.</li>
-          </ul>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="container pb-10">
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-3">How it works</h2>
-          <ol className="list-decimal pl-6 space-y-2 text-[var(--ink)]">
-            <li>Pick a tag (Advice, Confession, Storytime, etc.) and write up to 280 characters.</li>
-            <li>Post. People can ❤️ like; 👁 views increment when your card is seen.</li>
-            <li>Tap <strong>Share</strong> to export a clean image and copy the link.</li>
-          </ol>
-        </div>
-      </section>
-
-      {/* ETHOS / SAFETY */}
-      <section className="container pb-16">
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-2">The vibe</h2>
-          <ul className="list-disc pl-5 space-y-1 text-[var(--muted)]">
-            <li>Be real. No harassment. No doxxing. No illegal content.</li>
-            <li>No sign-ups, no DMs, no comment wars—share elsewhere if you want to discuss.</li>
-            <li>We filter obvious spam and illegal posts. The rest is the internet, unfiltered.</li>
-          </ul>
+        <div className="stack-3" style={{marginTop:"18px"}}>
+          <div className="card">
+            <strong>What people share here</strong>
+            <div className="muted">
+              Hot takes, advice requests, tiny stories, confessions, wins, late-night musings, and stuff
+              you can’t post anywhere else.
+            </div>
+          </div>
+          <div className="card">
+            <strong>How it works</strong>
+            <ol className="muted" style={{margin:"8px 0 0 18px"}}>
+              <li>Pick a tag (Advice, Confession, Storytime…) and write up to 280 characters.</li>
+              <li>Post. People can ❤️ like; 👁️ views increment when your card is seen.</li>
+              <li>Tap Share to export a clean image and copy the link.</li>
+            </ol>
+          </div>
+          <div className="card dense">
+            <strong>The vibe</strong>
+            <div className="muted">Be real. No harassment. No doxxing. No illegal content.</div>
+          </div>
         </div>
       </section>
     </main>
