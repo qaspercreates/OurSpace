@@ -1,12 +1,8 @@
 "use client";
-
 import { useState } from "react";
 import { CITIES, City } from "@/data/cities";
 
-type Props = {
-  value?: City | null;
-  onChange: (c: City | null) => void;
-};
+type Props = { value?: City | null; onChange: (c: City | null) => void };
 
 export default function LocationPicker({ value, onChange }: Props) {
   const [query, setQuery] = useState("");
@@ -29,11 +25,7 @@ export default function LocationPicker({ value, onChange }: Props) {
         className="w-full rounded-md border border-[var(--border)] bg-white/80 px-3 py-2"
       />
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-40 overflow-auto">
-        <button
-          type="button"
-          className={`btn-outline text-sm ${!value ? "ring-1 ring-[var(--border)]" : ""}`}
-          onClick={() => onChange(null)}
-        >
+        <button type="button" className={`btn-outline text-sm ${!value ? "ring-1 ring-[var(--border)]" : ""}`} onClick={() => onChange(null)}>
           No location
         </button>
         {filtered.map((c) => (
