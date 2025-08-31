@@ -1,57 +1,51 @@
-import Link from "next/link";
-import Navbar from "@/components/Navbar";
-
-export default function HomePage() {
+// app/page.tsx
+export default function Home() {
   return (
-    <>
-      <Navbar />
-      <main className="container section">
-        <section className="hero">
-          <span className="hero-eyebrow">This is Our Space</span>
-          <h1 className="hero-title">Say anything. Read everything.</h1>
-          <p className="hero-sub">
-            Instant, anonymous posts. No sign-ups. Tap ❤️ to like, 👁️ to see reach, 
-            and share a clean screenshot anywhere. No DMs. No comments. 
-            Just the world’s thoughts — unfiltered, beautifully simple.
-          </p>
-          <Link href="/feed" className="btn btn-primary">
-            Enter the Feed
-          </Link>
-        </section>
+    <main className="min-h-screen bg-white text-gray-900">
+      <header className="border-b">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="text-xl font-semibold">OurSpace</h1>
+          <span className="text-sm text-gray-500">The internet, unfiltered.</span>
+        </div>
+      </header>
 
-        <section className="section">
-          <div className="feature-grid">
-            <div className="card card--padded">
-              <h2 className="text-lg font-bold mb-2">👤 Anonymous by default</h2>
-              <p>No account. Post in seconds. One-like-per-person keeps it honest.</p>
-            </div>
-            <div className="card card--padded">
-              <h2 className="text-lg font-bold mb-2">📊 Lightweight signals</h2>
-              <p>Views tick only when a post hits your screen. Likes are simple and public.</p>
-            </div>
-            <div className="card card--padded">
-              <h2 className="text-lg font-bold mb-2">🚀 Built to go viral</h2>
-              <p>Share generates a crisp image for TikTok, Snap, IG, or chats.</p>
-            </div>
+      <section className="max-w-5xl mx-auto px-4 py-8 space-y-6">
+        <div className="rounded-lg border p-6">
+          <h2 className="text-lg font-semibold mb-3">Post something</h2>
+          <div className="flex items-start gap-3">
+            <textarea
+              placeholder="What's on your mind?"
+              className="w-full h-24 resize-none rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button className="rounded-md px-4 py-2 bg-blue-600 text-white hover:bg-blue-700">
+              Post
+            </button>
           </div>
-        </section>
+          <p className="text-xs text-gray-500 mt-2">0/280</p>
+        </div>
 
-        <section className="section">
-          <h2 className="text-xl font-bold mb-4">What people share here</h2>
-          <div className="chips">
-            <div className="chip">🔥 Hot takes that wouldn’t survive a comment section</div>
-            <div className="chip">💡 Advice requests from strangers who really read</div>
-            <div className="chip">🎉 Confessions & wins without chasing clout</div>
-            <div className="chip">📝 Tiny stories, shower thoughts, late-night musings</div>
-            <div className="chip">🌍 Crowd wisdom on work, money, school, travel, fitness</div>
-            <div className="chip">✨ Stuff people can’t post anywhere else</div>
-          </div>
-        </section>
+        <div className="space-y-4">
+          <article className="rounded-lg border p-5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-500">2 min ago • Random</span>
+              <button className="text-sm px-3 py-1 rounded-md border hover:bg-gray-50">Share</button>
+            </div>
+            <p className="mb-4">hello from ourspace 👋</p>
+            <div className="flex items-center gap-3">
+              <button className="px-3 py-1 rounded-md bg-blue-600 text-white hover:bg-blue-700">❤️ 2</button>
+              <span className="text-sm text-gray-500">👁️ 39</span>
+            </div>
+          </article>
 
-        <footer className="footer">
+          <button className="w-full rounded-md border py-2 hover:bg-gray-50">Load more</button>
+        </div>
+      </section>
+
+      <footer className="mt-12 border-t">
+        <div className="max-w-5xl mx-auto px-4 py-6 text-center text-sm text-gray-500">
           OurSpace — The internet, unfiltered.
-        </footer>
-      </main>
-    </>
+        </div>
+      </footer>
+    </main>
   );
 }
