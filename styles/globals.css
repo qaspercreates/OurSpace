@@ -1,317 +1,42 @@
-/* styles/globals.css
-   OurSpace – light, premium theme
-   ------------------------------------------------------------- */
-
-/* Tailwind hooks */
+/* Tailwind must be first */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ---------- CSS Variables (design tokens) ---------- */
-:root{
-  /* brand */
-  --brand-1: 255 90% 58%;     /* violet/blue */
-  --brand-2: 205 98% 62%;     /* cyan */
-  --brand-3: 265 85% 66%;     /* purple */
-
-  /* surface + strokes */
-  --bg: 0 0% 99%;
-  --panel: 0 0% 100%;
-  --glass: 0 0% 100%;
-  --stroke: 220 17% 90%;
-  --muted: 220 12% 45%;
-
-  /* elevation */
-  --ring: 215 100% 60% / .25;
-  --shadow-1: 0 10px 30px rgba(20, 24, 40, .06);
-  --shadow-2: 0 6px 18px rgba(20, 24, 40, .05);
-
-  /* rhythm */
-  --radius: 14px;
-  --radius-sm: 10px;
-  --radius-lg: 20px;
-  --gap-1: .5rem;
-  --gap-2: .75rem;
-  --gap-3: 1rem;
-  --gap-4: 1.25rem;
-  --gap-5: 1.5rem;
-  --gap-6: 2rem;
-
-  /* type scale */
-  --fs-hero: clamp(1.9rem, 2.8vw + 1rem, 3rem);
-  --fs-h1: clamp(1.4rem, 1.4vw + .9rem, 2rem);
-  --fs-h2: clamp(1.1rem, 1vw + .8rem, 1.35rem);
-  --fs-body: 16px;
+/* Base resets */
+html, body, #__next {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-html, body, #__next{height:100%;}
-html{scroll-behavior:smooth;}
-
-body{
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-  color: hsl(222 30% 18%);
-  background:
-    radial-gradient(1200px 600px at 10% -10%, hsl(var(--brand-3) / .10), transparent 60%),
-    radial-gradient(900px 500px at 95% 10%, hsl(var(--brand-2) / .10), transparent 60%),
-    radial-gradient(1200px 700px at 50% 120%, hsl(var(--brand-1) / .10), transparent 60%),
-    linear-gradient(180deg, hsl(var(--bg)) 0%, #F8FAFF 100%);
-  background-attachment: fixed; /* one continuous bg */
-  min-height: 100%;
+body {
+  /* safe defaults */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  line-height: 1.5;
 }
 
-/* Subtle texture so light theme doesn’t look flat */
-body::before{
-  content:"";
-  position: fixed;
-  inset:0;
-  pointer-events:none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%2300000033'%3E%3Ccircle cx='1' cy='1' r='.7'/%3E%3C/g%3E%3C/svg%3E");
-  opacity:.08;
-  mix-blend-mode: multiply;
+/* Optional helpers you can keep or delete */
+.container {
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-/* ---------- Layout helpers ---------- */
-.container{
-  width: 100%;
-  max-width: 880px;          /* nice reading width */
-  margin-inline: auto;
-  padding-inline: var(--gap-4);
+button {
+  @apply rounded-md px-4 py-2 font-medium transition;
 }
 
-.section{padding-block: clamp(1.5rem, 2vw + 1rem, 3rem);}
-
-/* ---------- Top Nav / Header ---------- */
-.navbar{
-  position: sticky;
-  top:0;
-  z-index: 50;
-  backdrop-filter: saturate(1.4) blur(10px);
-  background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.55));
-  border-bottom: 1px solid hsl(var(--stroke));
+button:disabled {
+  @apply opacity-50 cursor-not-allowed;
 }
 
-.navbar-inner{
-  height: 64px;
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: var(--gap-4);
+input, textarea, select {
+  @apply border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
 }
 
-.logo{
-  display:flex; align-items:center; gap:.6rem;
-  font-weight: 800;
-  letter-spacing:.2px;
-  font-size: clamp(1.2rem, 1.2vw + .9rem, 1.5rem); /* bigger */
-  background: linear-gradient(90deg, hsl(var(--brand-3)), hsl(var(--brand-1)), hsl(var(--brand-2)));
-  -webkit-background-clip: text; background-clip: text;
-  color: transparent;
-}
-
-.logo img, .logo svg{width:28px; height:28px;}
-
-/* ---------- Hero / Homepage ---------- */
-.hero{
-  text-align:center;
-  padding-block: clamp(2.2rem, 6vw, 5rem);
-}
-
-.hero-eyebrow{
-  display:inline-block;
-  padding:.35rem .6rem;
-  border-radius: 999px;
-  border:1px solid hsl(var(--stroke));
-  background: rgba(255,255,255,.65);
-  font-size:.8rem;
-  color: hsl(220 15% 35%);
-  margin-bottom: .9rem;
-}
-
-.hero-title{
-  font-size: var(--fs-hero);
-  line-height: 1.1;
-  letter-spacing:-.02em;
-  font-weight: 900;
-  background: linear-gradient(90deg, hsl(var(--brand-3)), hsl(var(--brand-1)), hsl(var(--brand-2)));
-  -webkit-background-clip: text; background-clip:text; color: transparent;
-  margin-bottom:.75rem;
-}
-
-.hero-sub{
-  color: hsl(220 11% 36%);
-  font-size: 1rem;
-  max-width: 720px;
-  margin: 0 auto var(--gap-5);
-}
-
-/* ---------- Cards / Postcards ---------- */
-.card{
-  position: relative;
-  background: linear-gradient(180deg, hsl(var(--glass) / .88), hsl(var(--glass) / .78));
-  border: 1px solid hsl(var(--stroke));
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-1);
-}
-
-.card--padded{ padding: var(--gap-5); }
-.card--tight{ padding: var(--gap-3); }
-
-/* Used for feed “postcards” */
-.post{
-  @apply w-full;
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.post__header{
-  display:flex; align-items:center; justify-content: space-between;
-  color: hsl(220 12% 40%);
-  font-size: .86rem;
-  margin-bottom: var(--gap-2);
-}
-
-.post__body{
-  color: hsl(222 25% 16%);
-  font-size: 1.02rem;
-  line-height: 1.45;
-}
-
-.post__footer{
-  display:flex; align-items:center; gap:1rem;
-  margin-top: var(--gap-4);
-  color: hsl(220 12% 40%);
-}
-
-/* ---------- Buttons ---------- */
-.btn{
-  --_bg: 255 100% 60%;
-  display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
-  padding:.58rem .9rem;
-  border-radius: 14px;
-  font-weight: 700;
-  font-size:.95rem;
-  border:1px solid hsl(var(--stroke));
-  transition: transform .1s ease, box-shadow .2s ease, background .2s ease;
-  user-select:none;
-}
-
-.btn-primary{
-  color:#fff;
-  background:
-    radial-gradient(120% 140% at 0% 0%, hsl(var(--brand-3)), transparent 50%),
-    linear-gradient(90deg, hsl(var(--brand-1)), hsl(var(--brand-2)));
-  box-shadow: 0 6px 16px hsl(var(--ring));
-}
-.btn-primary:hover{ transform: translateY(-1px); }
-.btn-primary:active{ transform: translateY(0); }
-
-.btn-ghost{
-  background: rgba(255,255,255,.7);
-  color: hsl(222 35% 20%);
-}
-.btn-ghost:hover{ background: rgba(255,255,255,.9); }
-
-.btn-link{
-  color: hsl(var(--brand-1));
-  font-weight:700;
-}
-
-/* ---------- Badges / Pills ---------- */
-.badge{
-  display:inline-flex; align-items:center; gap:.45rem;
-  padding:.32rem .6rem;
-  border-radius: 999px;
-  border:1px solid hsl(var(--stroke));
-  background: rgba(255,255,255,.8);
-  font-size:.82rem;
-  color: hsl(220 15% 35%);
-}
-
-/* ---------- Inputs (composer) ---------- */
-.input, textarea{
-  width:100%;
-  border-radius: var(--radius);
-  border:1px solid hsl(var(--stroke));
-  background: rgba(255,255,255,.8);
-  padding:.85rem .95rem;
-  outline: none;
-  transition: box-shadow .15s ease, border-color .15s ease, background .15s ease;
-}
-.input:focus, textarea:focus{
-  border-color: hsl(var(--brand-2));
-  box-shadow: 0 0 0 4px hsl(var(--ring));
-  background: #fff;
-}
-
-/* Counter under composer */
-.counter{
-  font-size:.8rem; color: hsl(220 12% 46%);
-}
-
-/* ---------- Grid helpers ---------- */
-.feature-grid{
-  display:grid;
-  grid-template-columns: repeat(12, minmax(0,1fr));
-  gap: var(--gap-4);
-}
-.feature-grid > .card{ grid-column: span 12 / span 12; }
-@media (min-width: 720px){
-  .feature-grid > .card{ grid-column: span 4 / span 4; }
-}
-
-/* “What people share here” chips */
-.chips{
-  display:grid;
-  grid-template-columns: repeat(12, minmax(0,1fr));
-  gap: var(--gap-3);
-}
-.chips > .chip{
-  grid-column: span 12 / span 12;
-  padding:.8rem 1rem;
-  border-radius: var(--radius-sm);
-  border:1px solid hsl(var(--stroke));
-  background: rgba(255,255,255,.8);
-  color: hsl(220 13% 32%);
-  box-shadow: var(--shadow-2);
-}
-@media (min-width: 720px){
-  .chips > .chip{ grid-column: span 4 / span 4; }
-}
-
-/* ---------- Map page helpers ---------- */
-.map-wrap{
-  height: 70vh;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border:1px solid hsl(var(--stroke));
-  box-shadow: var(--shadow-1);
-}
-.leaflet-container{ height:100%; }
-
-/* ---------- Misc ---------- */
-hr.rule{
-  height:1px; border:0; background: hsl(var(--stroke));
-}
-
-/* Footer */
-.footer{
-  color:hsl(220 12% 45%);
-  text-align:center;
-  padding-block: 2rem 3rem;
-  font-size:.9rem;
-}
-
-/* ---------- Utility classes if you don't want to hunt in TSX ---------- */
-.center { display:flex; align-items:center; justify-content:center; }
-.stack-y > * + * { margin-top: var(--gap-4); }
-.stack-tight > * + * { margin-top: var(--gap-2); }
-.max-w { max-width:880px; margin-inline:auto; }
-.mt-6{ margin-top: var(--gap-6); }
-.mb-6{ margin-bottom: var(--gap-6); }
-
-/* Make select dropdowns a touch nicer in light mode */
-select{
-  border-radius: 12px; padding:.55rem .7rem; border:1px solid hsl(var(--stroke));
-  background:#fff; color:hsl(220 18% 22%);
-}
-select:focus{ outline:none; box-shadow: 0 0 0 4px hsl(var(--ring)); border-color:hsl(var(--brand-2)); }
+/* Keep adding your custom rules below this line */
